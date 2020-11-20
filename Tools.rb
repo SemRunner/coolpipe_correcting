@@ -612,7 +612,8 @@ module Sketchup::CoolPipe
 			end
 			view.invalidate
 		end #def onMouseMove(flags, x, y, view)
-		def onLButtonDown(flags, x, y, view)   #Обработчик нажатия клавиши мыши
+        def onLButtonDown(flags, x, y, view)   #Обработчик нажатия клавиши мыши
+            # puts "--!!-- onLButtonDown"
 			case @state
 				when STATE_SELECT_FIRST_POINT
 					@ip2.pick view, x, y
@@ -843,8 +844,11 @@ module Sketchup::CoolPipe
 		def initialize(param = nil)          # Инициализация инструмента, по умолчанию параметры не заданы
 			super(param)     #наследование метода из класса ToolDrawElement
             @angle_grad = 90 #Значение по умолчанию
-		end
-		def reset(view)                                  #Сброс настроек
+            #puts "--!!-- call initialize"
+        end
+
+        def reset(view)                                  #Сброс настроек
+            #puts "--!!-- call reset"
 			super(view)
 			Sketchup::set_status_text($coolpipe_langDriver["Указать место расположения отвода"], SB_PROMPT)
 			@drawn = false
@@ -853,13 +857,13 @@ module Sketchup::CoolPipe
 			@user_change_angle = false
 			@user_change_radius_angle=false
 		end
-		def getExtents                                   #Указывает Sketchup границы рисования для View
+        def getExtents                                   #Указывает Sketchup границы рисования для View
 			bounds = Sketchup.active_model.bounds
 			@draw_elbow_pts.each{|dots|;dots.each{|pt|;bounds.add(pt)}} if @draw_elbow_pts!=nil
 			@angle_panel_dots.each{|pt|;bounds.add(pt)} if @angle_panel_dots!=nil
 			return bounds
 		end
-		def enableVCB?                                   #Разрешение/Запрещение пользовательского ввода
+        def enableVCB?                                   #Разрешение/Запрещение пользовательского ввода
 			return false if @state == STATE_SELECT_FIRST_POINT   #запрещаем пользовательский ввод
 			return true  if @state == STATE_SET_ANGLE            #разрешаем пользовательский ввод
 			return true  if @state == STATE_SET_RADIUS_ANGLE     #разрешаем пользовательский ввод
@@ -884,7 +888,8 @@ module Sketchup::CoolPipe
 			ph.do_pick x,y
 			component = ph.best_picked
 			if component!=nil
-				if Sketchup::CoolPipe::cp_iscpcomponent?(component)  # Указатель мыши над компонентом CoolPipeComponent
+                if Sketchup::CoolPipe::cp_iscpcomponent?(component)  # Указатель мыши над компонентом CoolPipeComponent
+                    # puts "--!!-- onMouseMove_StateSelectFirstPoint on coolpipe component"
 					create_elbow_param(ph,x,y,view)
 					@drawconnector=true
 					trans = component.transformation
@@ -905,7 +910,7 @@ module Sketchup::CoolPipe
 				end
 			end
 		end
-		def onMouseMove_StateSetAngle(flags, x, y, view)           #Обработчик движения указателя мыши при выборе угла вращения вокруг точки вставки
+        def onMouseMove_StateSetAngle(flags, x, y, view)           #Обработчик движения указателя мыши при выборе угла вращения вокруг точки вставки
 			########
 			#1. Выбрать 4 точки окружности (панели вращения) - получить массив этих точек (соответствуют началам квадрантов)
 			#2. Спроецировать на экран точки по п.1,точку центра этой окружности, и точку мыши
@@ -914,7 +919,8 @@ module Sketchup::CoolPipe
 			#5. Найти 2 первых индекса минимальных углов - это будут те координаты квадрантов между которыми находится мышь
 			#6. Определим квадрант расположения указателя мыши по ближайшим двум точкам и вычисляем реальный угол от 0-359 градусов
 			#7. Повернем отображаемые сетки на найденный угол
-			########
+            ########
+            # puts "--!!-- onMouseMove_StateSetAngle"
 			angle=get_angle_mouse_connector(flags, x, y, view) # 1 - 6
 			anchorangle = getAnchorAngle(view,x,y)
 			angle = anchorangle.degrees if anchorangle!=nil
@@ -932,16 +938,20 @@ module Sketchup::CoolPipe
 				@actual_point_rotate = @point_rotate.transform(multi_trans)
 			end
 		end
-		def onMouseMove_State_Set_Radius_Angle(flags, x, y, view)  #Обработчик движения указателя мыши при выборе угла отвода (угол закругления от 0 до 180 градусов)
+        def onMouseMove_State_Set_Radius_Angle(flags, x, y, view)  #Обработчик движения указателя мыши при выборе угла отвода (угол закругления от 0 до 180 градусов)
+            #puts "--!!-- onMouseMove_State_Set_Radius_Angle"
 			if @user_change_radius_angle==false
 				@ip3.pick view, x, y
 				view.tooltip = @ip3.tooltip if( @ip3.valid? ) #отслеживание привязок по сторонней геометрии
                 dn = if ((@alt_dn==nil)or(@alt_dn==@param[:Dнар])) then @param[:Dнар].to_f else @alt_dn.to_f end
+                du = @param[:Du]
 				radius = @param[:РадиусИзгиба].to_f
-                point = Geom::Point3d.new(dn.mm*$cp_elbowK,0,0)
+                #point = Geom::Point3d.new(dn.mm*$cp_elbowK,0,0)
+                point = Geom::Point3d.new(du.mm*$cp_elbowK,0,0)
 				move = Geom::Transformation.new point
 				transformation =Geom::Transformation.rotation(point,[1,0,0],90.degrees)
-				arc = generate_arc(3*dn,-90,90,5)
+                #arc = generate_arc(3*dn,-90,90,5)
+                arc = generate_arc(3*du,-90,90,5)
 				movearc = arc.collect{|pt|;pt.transform(move)}
 				@angle_panel_dots = movearc.collect{|pt|;pt.transform(transformation).transform(@transform_point).transform(@rot_trans)} #Полуокружность для рисования панели выбора градуса поворота отвода
 				########
@@ -963,11 +973,13 @@ module Sketchup::CoolPipe
 				Sketchup.vcb_value= str_angle + "°" #Печатаем найденный угол в зону контроля значения (в градусах)
 				vector = [0,0,1]
 				@elbowCurve_trans = Geom::Transformation.rotation point, vector, angle
-				point2 = ([radius,radius+2*dn,0]).transform(@elbowCurve_trans)
+                #point2 = ([radius,radius+2*dn,0]).transform(@elbowCurve_trans)
+                point2 = ([radius,radius+2*du,0]).transform(@elbowCurve_trans)
 				@elbow_curve_vec = ([point,point2]).collect{|pt|;pt.transform(transformation).transform(@transform_point).transform(@rot_trans)} #Вектор указываюший степень закругления
 				########
 				segm = @param[:Cегментов].to_i
-				radius=@param[:РадиусИзгиба].to_f*dn.mm
+                #radius=@param[:РадиусИзгиба].to_f*dn.mm
+                radius=@param[:РадиусИзгиба].to_f*du.mm
 				delta_angle = 360/segm
 				circle_dots = generate_arc(dn/2,0,360,delta_angle)
 				vector=[0,-1,0]
@@ -985,8 +997,10 @@ module Sketchup::CoolPipe
 				transformation = Geom::Transformation.rotation point, vector, (360-(angle*180/PI/2)).degrees
 				@pt_ccline = @pt_ccline.transform(transformation).transform(@transform_point).transform(@rot_trans)
 			end
-		end
-		def create_elbow_param(ph,x,y,view)              #Создание параметров отвода относительно места присоединения
+        end
+
+        def create_elbow_param(ph,x,y,view)              #Создание параметров отвода относительно места присоединения
+            #puts "--!!-- call create_elbow_param"
 			component = ph.best_picked  #это компонент к которому прилипает отвод
 			face_component = ph.picked_face #это активная поверхность (например конец трубопровода)
 			connector_attribute = Sketchup::CoolPipe::cp_getattributes(face_component)
@@ -1001,16 +1015,18 @@ module Sketchup::CoolPipe
 			else
 				@param[:Dнар]      = @alt_dn #Альтернативный диаметр для переходов и тройников
                 @param[:стенка]    = @alt_st
-                @param[:Du]        = get_du(@param[:Dнар].to_f, @param[:стенка].to_f)
+                @param[:Du]        = get_du(@alt_dn.to_f, @alt_st.to_f)
                 @param[:Имя]       = $coolpipe_langDriver["Отвод"]+" Ø#{@alt_dn}х#{@alt_st} (R=#{$cp_elbowK}DN)"
 			end
 			@param[:ГОСТ]          = "Документ"
 			@param[:УголОтвода]    = 90
 			@param[:РадиусИзгиба]  = $cp_elbowK
 			@param[:Cегментов]     = $cp_segments
-			@param[:typemodel]     = "cyl"
+            @param[:typemodel]     = "cyl"
+            #puts "@param Du = " + @param[:Du].to_s
 		end
-		def get_connectorspoints(component,trans)        #РЕКУРСИВНАЯ ФУНКЦИЯ Поиск точек коннекторов считанных с круговых поверхностей по vertex'ам
+        def get_connectorspoints(component,trans)        #РЕКУРСИВНАЯ ФУНКЦИЯ Поиск точек коннекторов считанных с круговых поверхностей по vertex'ам
+            #puts "--!!-- call get_connectorspoints"
 			connectors = []
 			component_class = component.class.to_s
 			case component_class
@@ -1030,7 +1046,8 @@ module Sketchup::CoolPipe
 			connectors.compact
 			connectors
 		end
-		def getfaceconnector(point,component,trans)      #РЕКУРСИВНАЯ ФУНКЦИЯ находит объект класса Face в компоненте, точка которой является серединой этого face
+        def getfaceconnector(point,component,trans)      #РЕКУРСИВНАЯ ФУНКЦИЯ находит объект класса Face в компоненте, точка которой является серединой этого face
+            #puts "--!!-- call getfaceconnector"
 			component_class = component.class.to_s
 			face = nil
 			case component_class
@@ -1049,7 +1066,8 @@ module Sketchup::CoolPipe
 			end
 			face
 		end
-		def onKeyDown(key, repeat, flags, view)          #Обработка нажатий клави на клавиатуре при нажатии
+        def onKeyDown(key, repeat, flags, view)          #Обработка нажатий клави на клавиатуре при нажатии
+            #puts "--!!-- onKeyDown"
 			if( key == CONSTRAIN_MODIFIER_KEY && repeat == 1 )
 				@shift_down_time = Time.now
 				if( view.inference_locked? )
@@ -1065,7 +1083,8 @@ module Sketchup::CoolPipe
 			end
 			super(key, repeat, flags, view)
 		end
-		def onLButtonDown(flags, x, y, view)             #Нажатие на левую клавишу мыши
+        def onLButtonDown(flags, x, y, view)             #Нажатие на левую клавишу мыши
+            #puts "--!!-- onLButtonDown"
 			if  @state == STATE_SELECT_FIRST_POINT
 				@ip1.pick view, x, y
 				if @draw_elbow_pts.length>0 #если есть отображение сетки, можно переходить к следующему этапу
@@ -1144,11 +1163,14 @@ module Sketchup::CoolPipe
 					else
 						radius = @alt_dn.to_f*$cp_elbowK
 						dn  = @alt_dn.to_f            #Наружний диаметр отвода
-					end
-					point = Geom::Point3d.new(dn.to_f.mm*$cp_elbowK,0,0)
+                    end
+                    du = @param[:Du].to_f
+                    #point = Geom::Point3d.new(dn.to_f.mm*$cp_elbowK,0,0)
+                    point = Geom::Point3d.new(du.to_f.mm*$cp_elbowK,0,0)
 					move = Geom::Transformation.new point
 					transformation =Geom::Transformation.rotation(point,[1,0,0],90.degrees)
-					arc = generate_arc(3*dn,-90,90,5)
+                    #arc = generate_arc(3*dn,-90,90,5)
+                    arc = generate_arc(3*du,-90,90,5)
 					movearc = arc.collect{|pt|;pt.transform(move)}
 					@angle_panel_dots = movearc.collect{|pt|;pt.transform(transformation).transform(@transform_point).transform(@rot_trans)} #Полуокружность для рисования панели выбора градуса поворота отвода
 					########
@@ -1158,11 +1180,13 @@ module Sketchup::CoolPipe
 					Sketchup.vcb_value= str_angle + "°" #Печатаем найденный угол в зону контроля значения (в градусах)
 					vector = [0,0,1]
 					@elbowCurve_trans = Geom::Transformation.rotation point, vector, angle
-					point2 = ([radius,radius+2*dn,0]).transform(@elbowCurve_trans)
+                    #point2 = ([radius,radius+2*dn,0]).transform(@elbowCurve_trans)
+                    point2 = ([du*$cp_elbowK,du*$cp_elbowK+2*du,0]).transform(@elbowCurve_trans)
 					@elbow_curve_vec = ([point,point2]).collect{|pt|;pt.transform(transformation).transform(@transform_point).transform(@rot_trans)} #Вектор указываюший степень закругления
 					########
 					segm = @param[:Cегментов].to_i
-					radius=dn.mm*$cp_elbowK
+                    #radius=dn.mm*$cp_elbowK
+                    radius = du.mm*$cp_elbowK
 					delta_angle = 360/segm
 					circle_dots = generate_arc(dn/2,0,360,delta_angle)
 					vector=[0,-1,0]
@@ -1186,17 +1210,21 @@ module Sketchup::CoolPipe
 					cp_create_cylindr_geometry if $cp_vnGeom==false
 			end
 		end
-		def generate_elbow_dots                  #Создание опорных точек для построения отвода
+        def generate_elbow_dots                  #Создание опорных точек для построения отвода
+            #puts "--!!-- call generate_elbow_dots"
 			if (@alt_dn==nil) or (@alt_dn==@param[:Dнар])
 				diam = @param[:Dнар].to_f            #Наружний диаметр отвода
 				wall = @param[:стенка].to_f          #Толщина стенки отвода
                 #--sm radius=@param[:Dнар].to_f*$cp_elbowK #Радиус закругления отвода
                 radius=get_du(@param[:Dнар].to_f, wall.to_f).to_f*$cp_elbowK #Радиус закругления отвода
+                #puts "--!!-- radius = " + radius.to_s
+
 			else
 				diam  = @alt_dn.to_f            #Наружний диаметр отвода
 				wall  = @alt_st.to_f            #Толщина стенки отвода
                 #-sm radius= @alt_dn.to_f*$cp_elbowK #Радиус закругления отвода
                 radius=get_du(@alt_dn.to_f, wall.to_f).to_f*$cp_elbowK #Радиус закругления отвода
+                #puts "--!!-- radius = " + radius.to_s
 			end
 			segm = @param[:Cегментов].to_i       #Кол-во сегментов
 			point= [radius.to_f.mm,0,0]          #Точка вокруг которой рисуется отвод
@@ -1218,7 +1246,8 @@ module Sketchup::CoolPipe
 			@point_rotate = point
 			@elbow_dots.compact
 		end
-		def draw(view)                                   #Визуализация действий при рисовании трубы (вывод сетки, маркеров, коннекторов и т.д.)
+        def draw(view)                                   #Визуализация действий при рисовании трубы (вывод сетки, маркеров, коннекторов и т.д.)
+            # puts "--!!-- call draw"
 			i = 0
 			case @state
 				when STATE_SELECT_FIRST_POINT #Место расположение отвода
@@ -1295,10 +1324,12 @@ module Sketchup::CoolPipe
 					view.draw_points  @ip3.position, 3, 1, "brown" if ( @ip3.valid? )  #Отображение точки привязки
 			end
 		end
-		def draw_elbow_dots(view)                        #Отрисовка сетки будущего отвода
+        def draw_elbow_dots(view)                        #Отрисовка сетки будущего отвода
+            #puts "--!!-- call draw_elbow_dots"
 			draw_array_circlepts(@draw_elbow_pts,view)
 		end
-		def cp_createelbowattributes(param)              #создает список атрибутов для Отвода
+        def cp_createelbowattributes(param)              #создает список атрибутов для Отвода
+            #puts "--!!-- call cp_createelbowattributes"
 			attributes={}
 			if param!=nil
 			apr = @actual_point_rotate
@@ -1324,7 +1355,8 @@ module Sketchup::CoolPipe
 			end
 			attributes
 		end #cp_createelbowattributes(param)
-		def cp_elbow_massa(attributes)                       #Вычисление  массы отвода с заданными параметрами из массы 90 градусного отвода
+        def cp_elbow_massa(attributes)                       #Вычисление  массы отвода с заданными параметрами из массы 90 градусного отвода
+            #puts "--!!-- call cp_elbow_massa"
 			dnstring = attributes[:Dнар]                      #Диаметр в мм строковой
 			ststring = attributes[:стенка]                    #Толщина стенки в мм строковая
 			alpha = @angle_grad.to_f                          #Угол отвода в градусах
@@ -1338,7 +1370,8 @@ module Sketchup::CoolPipe
 			puts $coolpipe_langDriver["Расчетная масса отвода"]+" Ø#{dnstring}x#{ststring} #{@angle_grad}° = #{massa} кг(kg)"
 			massa
 		end #cp_elbow_massa
-		def cp_create_elbow_geometry                     #ОТРИСОВЩИК - Создет геометрию отвода по переданным параметрам
+        def cp_create_elbow_geometry                     #ОТРИСОВЩИК - Создет геометрию отвода по переданным параметрам
+            #puts "--!!-- call cp_create_elbow_geometry"
 			if @draw_elbow_pts.length>0
 				view = @param[:view]
 				prevlayer1 = setactivLayer(@layer) if @layer!=nil # Устанавливаем активный слой если задан в параметрах
@@ -1431,7 +1464,8 @@ module Sketchup::CoolPipe
 				else
 					diam  = @alt_dn.to_f            #Наружний диаметр отвода
 				end
-				centerline_arc = entities.add_arc @actual_point_rotate,vec_cc1,cross_cc,(@param[:РадиусИзгиба].to_f.mm*diam.to_f),0.degrees,@angle_grad.degrees,@angle_grad/2
+                #centerline_arc = entities.add_arc @actual_point_rotate,vec_cc1,cross_cc,(@param[:РадиусИзгиба].to_f.mm*diam.to_f),0.degrees,@angle_grad.degrees,@angle_grad/2
+                centerline_arc = entities.add_arc @actual_point_rotate,vec_cc1,cross_cc,(@param[:РадиусИзгиба].to_f.mm*@param[:Du].to_f),0.degrees,@angle_grad.degrees,@angle_grad/2
 				######
 				######
 				# Скрытая геометрия для дальнейшего поиска коннекторов
@@ -1450,7 +1484,8 @@ module Sketchup::CoolPipe
 			end
 			component
 		end #cp_create_elbow_geometry(param)
-		def cp_create_cylindr_geometry                   #ОТРИСОВЩИК - Создет геометрию отвода в виде закругленного цилиндра по переданным параметрам
+        def cp_create_cylindr_geometry                   #ОТРИСОВЩИК - Создет геометрию отвода в виде закругленного цилиндра по переданным параметрам
+            # puts "--!!-- call cp_create_cylindr_geometry"
 			if @draw_elbow_pts.length>0
 				view = @param[:view]
 				prevlayer1 = setactivLayer(@layer) if @layer!=nil # Устанавливаем активный слой если задан в параметрах
@@ -1506,7 +1541,8 @@ module Sketchup::CoolPipe
 				else
 					diam  = @alt_dn.to_f            #Наружний диаметр отвода
 				end
-				centerline_arc = entities.add_arc @actual_point_rotate,vec_cc1,cross_cc,(@param[:РадиусИзгиба].to_f.mm*diam),0.degrees,@angle_grad.degrees,@angle_grad/2
+                #centerline_arc = entities.add_arc @actual_point_rotate,vec_cc1,cross_cc,(@param[:РадиусИзгиба].to_f.mm*diam),0.degrees,@angle_grad.degrees,@angle_grad/2
+                centerline_arc = entities.add_arc @actual_point_rotate,vec_cc1,cross_cc,(@param[:РадиусИзгиба].to_f.mm * @param[:Du]),0.degrees,@angle_grad.degrees,@angle_grad/2
 				######
 				# Скрытая геометрия для дальнейшего поиска коннекторов
 				point3 = entities.add_cpoint @actual_point_rotate  #Точка вокруг которой строится отвод
@@ -1532,7 +1568,7 @@ module Sketchup::CoolPipe
 			component
         end #cp_create_cylindr_geometry
 
-        def get_du(dn, st)
+        def get_du(dn, st)                              #Возвращает Du по Dn (Наружный диаметр) и St (толщина стенки)
             du_all=[10, 15, 20, 25, 32, 40, 50, 65, 80, 90, 100, 125, 150, 200, 225, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400]
             dv = dn-2*st
             array = du_all.map{ |elem| (elem-dv).abs}
