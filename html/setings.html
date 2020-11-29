@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<script type="text/javascript" src="refreshdialog.js"></script>
+	</head>
+	<link href="animate.css" rel="stylesheet" type="text/css">
+	<style type="text/css">
+		A IMG {border: none;}	
+	</style>
+	<body onload="setings_load_succesfull()">
+		<div id="coolpipe_logo" align="right">
+		<a href="http://coolpipe.ru/" target="_blank">
+		<img src="../button_icons/logo.png" align="absmiddle" width="150" height="30" >
+		</a>
+		</div><br>
+		<div class="animated  flipInY ">
+		<table width="450" height="100%" >
+			<tr>
+				<td width="60%"><div id="text_lang">Выберите язык</div></td>
+				<td width="40%">
+					<table>
+					<tr>
+					<td width="50%">
+					<select id="LanguageSelect" onchange="fsetactivelang()">
+					 <option id="option_Russian">Russian</option>
+					 <option id="option_English">English</option>
+					 <option id="option_French">French</option>
+					 <option id="option_Italian">Italian</option>
+					 <option id="option_Spanish">Spanish</option>
+					 <option id="option_German">German</option>
+					 <option id="option_Chinese">Chinese</option>
+					</select>	
+					</td>
+					<td width="50%">
+					 <div align="center">
+					 <img src="../button_icons/lang/Russia.png" width="32" height="32" id="activeflag">
+					 </div>
+					</td>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td><hr>
+					<div id="text_NumSegments">Количество сегментов для построения круглой геометрии</div></td>
+				<td>
+				<input id="NumSegments" value="24">
+				</td>
+			</tr>
+			<tr>
+				<td><hr>
+					<div id="text_elbowK">Коэффициент построения радиуса отвода от его диаметра</div></td>
+				<td>
+				<input id="elbowK" value="1,5">
+				</td>
+			</tr>
+			<tr>
+				<td><hr>
+					<div id="text_elbowPlotnost">Плотность материала для расчета массы отвода [г/см³]</div></td>
+				<td>
+				<input id="elbowPlotnost" value="7.85">
+				</td>
+			</tr>
+			<tr>
+				<td><hr>
+					<div id="text_vnGeom">Строить внутреннюю геометрию</div></td>
+				<td>
+				<input type="checkbox" id="vnGeomosn" onclick="fsetVnGeom()">				
+				</td>
+			</tr>
+			<tr>
+			<tr>
+				<td><hr>
+					<div id="text_countThreads">Количество потоков для расчетов</div></td>
+				<td>
+				<input id="countThreads" value="4">				
+				</td>
+			</tr>
+			<tr>
+			<td colspan="2" height="10%"><hr>
+				<div align="center">
+					<input type="button" name="drawbutton" id="text_save" value="Сохранить" onclick="SketchUpCommand('сохранить')">
+					<input type="button" name="cancelbutton" id="text_cancel" value="Отмена" onclick="SketchUpCommand('отмена')">
+					<input type="button" name="restorebutton" id="text_restore" value="Восстановить" onclick="SketchUpCommand('восстановить')">
+				</div>
+			</td>
+			</tr>
+			
+			<tr>
+				<td colspan="2">	
+					<div align="center">
+					<font size="1pt"><div id="text_copyright">CoolPipe for SketchUP Interface©</div></font>
+					</div>
+				</td>
+			</tr>
+			<tr style="display:none">
+			 <td> 
+			 <input id="Alt_CallBack" value="">
+			 <input id="vnGeom" value="unchecked">
+			 </td>
+			</tr>
+		</table>	
+		</div>
+		<script type="text/javascript">
+<!-- block save dialog-->
+//restore_prev_select("m_metal&gost10704&holdef&PE32&PP-H&&6&159&&&4.5&pit&true&false&1&false&8");
+<!-- END block save dialog-->
+		</script>
+	</body>
+</html>

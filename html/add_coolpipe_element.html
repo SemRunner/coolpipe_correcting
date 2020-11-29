@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<script type="text/javascript">
+		function load_succesfull()
+		{window.location='skp:ValueChanged@load_succesfull|0';}
+		function save()
+		{window.location='skp:ValueChanged@save|0';}
+		function cancel()
+		{window.location='skp:ValueChanged@cancel|0';}
+		function select_type()
+		{
+		objsel = document.getElementById("type_sel");
+		document.getElementById('Type_').value = objsel.value;
+		}
+		</script>
+	</head>
+
+	<link href="animate.css" rel="stylesheet" type="text/css">
+
+	<style type="text/css">
+	A IMG {border: none;}
+
+	<!-- Добавлено в версии 1.4 -->
+	.container .header span {
+		display: block;
+		font-size: 60%;
+		opacity: 0.8;
+		padding-bottom: 0.6em;
+	}
+
+	.tabs input[type=radio] {
+		position: absolute;
+		top: 70px;
+		left: 10px;
+	}
+
+	.tabs {
+		width: 500px;
+		float: none;
+		list-style: none;
+		position: relative;
+		padding: 0;
+		margin: 25px auto;
+	}
+
+	.tabs li {
+		float: left;
+	}
+
+	.tabs label {
+		display: block;
+		padding: 10px 20px;
+		border-radius: 2px 2px 0 0;
+		color: #696969;
+		font-size: 18px;
+		font-weight: normal;
+		font-family: 'Lily Script One', helveti;
+		background: rgba(255,255,255,0.2);
+		cursor: pointer;
+		position: relative;
+		top: 3px;
+		-webkit-transition: all 0.2s ease-in-out;
+		-moz-transition: all 0.2s ease-in-out;
+		-o-transition: all 0.2s ease-in-out;
+		transition: all 0.2s ease-in-out;
+	}
+
+	.tabs label:hover {
+		background: rgba(255,255,255,0.5);
+		top: 0;
+	}
+
+	[id^=tab]:checked + label {
+		background: #DCDCDC;
+		color: #778899;
+		top: 0;
+	}
+
+	[id^=tab]:checked ~ [id^=tab-content] {
+		display: block;
+	}
+
+	[id^=tab]:checked ~ [id^=tab-content], [id^=tab]:checked ~ [id^=tab-content] > div {
+		display: block;
+	}
+
+	.tab-content {
+		z-index: 2;
+		display: none;
+		overflow: hidden;
+		text-align: left;
+		width: 100%;
+		font-size: 18px;
+		line-height: 140%;
+		padding-top: 10px;
+		background: #DCDCDC;
+		padding: 15px;
+		color: #2F4F4F;
+		position: absolute;
+		top: 53px;
+		left: 0;
+		box-sizing: border-box;
+		-webkit-animation-duration: 0.5s;
+		-o-animation-duration: 0.5s;
+		-moz-animation-duration: 0.5s;
+		animation-duration: 0.5s;
+	}
+
+	.tab-content > div{
+		display: none;
+		-webkit-animation-duration: 1s;
+		-o-animation-duration: 1s;
+		-moz-animation-duration: 1s;
+		animation-duration: 1s;
+	}
+
+	.button-cancel {
+		text-align: center;
+		position: fixed;
+		top: 89%;
+		left: 35%;
+	}
+
+	.button-save {
+		text-align: center;
+		position: fixed;
+		top: 89%;
+		left: 50%;
+	}
+
+	.text-copyright {
+		text-align: center;
+		position: fixed;
+		top: 96%;
+		left: 37%;
+	}
+	</style>
+<!-- ------------------------- -->
+
+	<body onload="load_succesfull()">
+	<div align="right">
+	<a href="http://coolpipe.ru/" target="_blank"><img src="../button_icons/logo.png" align="absmiddle" width="150" height="30" ></a>
+	</div>
+	<!-- Код добавлен в версии 1.4 -->
+		<ul class="tabs">
+			<li>
+				<input checked="checked" name="tabs" id="tab1" type="radio">
+				<label for="tab1">Добавить</label>
+				<div id="tab-content1" class="tab-content">
+				<div class="animated  flipInY ">
+				<!-- Код версии 1.3 -->
+					<table>
+					 <tr>
+						<td><div id="text_type">Тип</div></td>
+						<td> </td>
+						<td>
+							<input type="text" id="Type_" style="display:none" value="Основное оборудование">
+							<select id="type_sel" onclick="select_type()"></select>
+						</td>
+					 </tr>
+					 <tr>
+						<td><div id="text_diametrUslovniy">Диаметр условный</div></td>
+						<td> </td>
+						<td><input type="text" id="Ду"></td>
+					 </tr>
+					 <tr>
+						<td><div id="text_diametrNaruzniy">Диаметр наружний</div></td>
+						<td> </td>
+						<td><input type="text" id="Dнар"></td>
+					 </tr>
+					 <tr>
+						<td><div id="text_tolsinaStenki">Толщина стенки</div></td>
+						<td> </td>
+						<td><input type="text" id="стенка"></td>
+					 </tr>
+					 <tr>
+						<td><div id="text_name">Наименование</div></td>
+						<td> </td>
+						<td><input type="text" id="Имя"></td>
+					 </tr>
+					 <tr>
+						<td><div id="text_edIzm">Единица измерения</div></td>
+						<td> </td>
+						<td><input type="text" id="ЕдИзм" value="шт"></td>
+					 </tr>
+					 <tr>
+						<td><div id="text_massaEd">Масса единицы</div></td>
+						<td> </td>
+						<td><input type="text" id="масса"></td>
+					 </tr>
+					 <tr>
+					 <td align="right" colspan=2><input  type="button" id="cancel" value="отмена"    onclick="cancel()"></td>
+					 <td align="left"><input type="button" id="save"   value="применить" onclick="save()"></td>
+					 </tr>
+					 </table>
+				<!-- END Код версии 1.3 -->
+				</div>
+				</div>
+			</li>
+			<li>
+				<input type="radio" name="tabs" id="tab2">
+				<label for="tab2">Изменить</label>
+				<div id="tab-content2" class="tab-content">
+				<div class="animated  flipInY ">
+					В следующих версиях - редактирование атрибутов coolpipe<br>
+					In the next versions - editing the coolpipe attributes
+				</div>
+				</div>
+			</li>
+			<li>
+				<input type="radio" name="tabs" id="tab3">
+				<label for="tab3">База</label>
+				<div id="tab-content3" class="tab-content">
+				<div class="animated  flipInY ">
+					В следующих версиях - пользовательская библиотека компонентов coolpipe<br>
+					In the next versions - a custom component library coolpipe
+				</div>
+				</div>
+			</li>
+		</ul>
+	<!-- END Код добавлен в версии 1.4 -->
+	<div align="center" class="text-copyright">
+		<font size="1pt"><div id="text_copyright">CoolPipe for SketchUP Interface©</div></font>
+	</div>
+	<div style="display:none">
+	<input id="Alt_CallBack" value="">
+	</div>
+	<script type="text/javascript">
+	selectbox = document.getElementById("type_sel");
+	</script>
+	</body>
+</html>

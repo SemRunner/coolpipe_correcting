@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<title>Specification CoolPipe</title>
+<!--****************************************************************************-->
+<script type='text/javascript'>
+var rownum = 0;
+function str_replace(search, replace, subject) {
+    return subject.split(search).join(replace);
+}
+function refresh_exportspec() // Обновление текста для экспорта
+{
+	var exportdiv = document.getElementById("export_spec");
+	var spectable = document.getElementById("tablespec");
+	var td_cells=spectable.cells;
+	exportdiv.value="";
+	var text_export="";
+	var k=1;
+	var l=0;
+	var m=0;
+	var text='';
+	for (var i=0; i < td_cells.length; i++)	{
+		l = Math.floor(k/5); //Целочисленное деление
+		m = k/5;
+		//alert(td_cells[i].innerHTML);
+		if (td_cells[i].innerHTML!=null){
+			text = td_cells[i].innerHTML.replace(/<[^>]+>/g,''); // очистка HTML тегов
+			//alert(text);
+			if (l==m) {text_export=text_export+text+'<br>';}
+			else      {text_export=text_export+text+';';};
+		}
+		k+=1;
+	}
+	exportdiv.value = text_export;
+}
+function addrowspec(name,edizm,colvo,massa,anyrownum)
+{
+	if (anyrownum!=0){rownum = rownum+1;}
+	var tbody = document.getElementById("tablespec").getElementsByTagName("TBODY")[0];
+	var row = document.createElement("TR")
+	if (anyrownum==0){row.style.background='rgb(223,255,127)';}
+	var td = document.createElement("TD")
+	if (anyrownum!=0){td.appendChild(document.createTextNode(rownum))}
+	td.width = 50
+	td.align = "center"
+	var td1 = document.createElement("TD")
+    td1.appendChild(document.createTextNode(name))
+	td1.width = 300
+	td1.align = "left"
+	var td2 = document.createElement("TD")
+	td2.appendChild(document.createTextNode(edizm))
+	td2.width = 80
+	td2.align = "center"
+	var td3 = document.createElement("TD")
+	td3.appendChild(document.createTextNode(colvo))
+	td3.width = 80
+	td3.align = "right"
+	var td4 = document.createElement("TD")
+	if ((massa=="")||(massa=="0")){massa="?";}
+	if (anyrownum!=0){td4.appendChild(document.createTextNode(massa))}
+	td4.width = 80
+	td4.align = "right"
+	row.appendChild(td);
+	row.appendChild(td1);
+	row.appendChild(td2);
+	row.appendChild(td3);
+	row.appendChild(td4);
+	tbody.appendChild(row);
+}
+function clearspectable()
+{
+	table_spec = document.getElementById("tablespec");
+	table_body = tablespec.getElementsByTagName("TBODY")[0];
+	rownum = 0;
+	while (table_body.rows[1]) {table_body.deleteRow(1);} //Удаление всех строк спецификации
+}
+function load_succesfull()            //сообщить SU что загрузка произведена
+{
+	message = 'skp:ValueChanged@spec_load_succesfull|0';
+	window.location=message;
+}
+function exportCSV()
+{
+	message = 'skp:ValueChanged@exportCSV|0';
+	window.location=message;
+}
+function cancel()
+{
+	message = 'skp:ValueChanged@cancel|0';
+	window.location=message;
+}
+function selecttypespec()
+{
+	fullspecradio  = document.getElementById("typespecfull");
+	layerspecradio = document.getElementById("typespecradio");
+	if (fullspecradio.checked) {message = 'skp:ValueChanged@changespectype|full';}
+	else {message = 'skp:ValueChanged@changespectype|layer';};
+	window.location=message;
+}
+//Дополнительная информация по спецификации (добавлено в версии 1.4.1(2018))
+function additionallySpecInfo()
+{
+	message = 'skp:ValueChanged@additionallySpecInfo|0';
+	window.location=message;
+}
+</script>
+<!--****************************************************************************-->
+	</head>
+	<style type="text/css">
+		A IMG {border: none;}
+		.col {word-wrap: break-word;}
+	</style>
+	<body onload="load_succesfull()">
+	<div id="coolpipe_logo" align="right">
+		<a href="http://coolpipe.ru/" target="_blank">
+		<img src="../button_icons/logo.png" align="absmiddle" width="150" height="30" >
+		</a>
+	</div><br>
+	<table border="0px">
+		<TBODY>
+			<tr>
+				<td><input type="radio" name="typespec" id="typespecfull" value="fullspec" checked="true" onclick="selecttypespec()"></td>
+				<td><div id="text_FullSpec" class="col">Объединенная спецификация</div></td>
+			</tr>
+			<tr>
+				<td><input type="radio" name="typespec" id="typespecradio" value="layerspec" onclick="selecttypespec()"></td>
+				<td><div id="text_LayerSpec">Спецификация по слоям</div></td>
+			</tr>
+		</TBODY>
+	</table><br>
+	<div align="center">
+	<table id='tablespec' border="1px" cellspacing="0" cellpadding="0">
+		<TBODY>
+			<tr>
+				<td align="center"><div id="text_Number">№</div></td>
+				<td align="center"><div id="text_Name">Наименование и техническая характеристика</div></td>
+				<td align="center"><div id="text_EdIzm">Ед.изм.</div></td>
+				<td align="center"><div id="text_Kolvo">Количество</div></td>
+				<td align="center"><div id="text_Massa">Масса ед.</div></td>
+			</tr>
+		</TBODY>
+	</table>
+	<br>
+	<input type="button" id="export_csv" value="Экспорт CSV"      onclick="exportCSV();">
+	<input type="button" id="cancel"     value="отмена"           onclick="cancel();">
+	<input type="button" id="extended_information" value="Дополнительно..." onclick="additionallySpecInfo();">
+	</div></div>
+	<input type="text" style="display:none" id="export_spec" width="200" height="200" value="спецификация"/>
+	<br>
+	<div align="center">
+		<font size="1pt"><div id="text_copyright">CoolPipe for SketchUP Interface©</div></font>
+	</div>
+	<div style="display:none">
+	<input id="Alt_CallBack" value="">
+	</div>
+
+	</body>
+</html>

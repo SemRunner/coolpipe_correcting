@@ -1092,7 +1092,6 @@ module Sketchup::CoolPipe
 						@state = STATE_SET_ANGLE
                     end
                 end
-                onMouseMove
 			elsif @state == STATE_SET_ANGLE
 				@ip2.pick view, x, y
 				if( @ip2.valid? )and(@param[:angleDegrees]==nil)
@@ -1105,7 +1104,6 @@ module Sketchup::CoolPipe
 					cp_create_cylindr_geometry if $cp_vnGeom==false
 					Sketchup.active_model.select_tool nil
                 end
-                onMouseMove
 			elsif @state == STATE_SET_RADIUS_ANGLE #После получения всех данных - рисуем отвод и завершаем класс
 				@ip3.pick view, x, y
 				if( @ip3.valid? )

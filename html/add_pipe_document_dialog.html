@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<!--****************************************************************************-->
+<script type='text/javascript'>
+var indexrow = 0;
+//////////////////////////////////////////////////////////
+function addrow(doc,description)
+{
+	indexrow = indexrow+1;
+	var body = document.getElementById("body_doc_list");
+	var tr = document.createElement("TR");
+	tr.id = "row"+indexrow+10000;
+	var td2 = document.createElement("TD");
+	var namedoc=document.createElement("input");
+	namedoc.type='text';
+	namedoc.id = "namedoc"+indexrow+10000;
+	namedoc.style.width="97%";
+	namedoc.size=20;
+	namedoc.value=doc;
+	namedoc.title="Наименование документа";
+	td2.appendChild(namedoc);
+	
+	var td3 = document.createElement("TD");
+	var descript=document.createElement("input");
+	descript.type='text';
+	descript.id = "descript"+indexrow+10000;
+	descript.size=40;
+	descript.value=description;
+	descript.style.width="97%";
+	descript.title="Описание документа";
+	td3.appendChild(descript);
+	
+	var td4 = document.createElement("TD");
+	var button=document.createElement("input");
+	button.type = 'button';
+	button.name = 'del'+indexrow;
+	button.value = 'X';
+	button.id = indexrow+10000;
+	button.onclick=function () {delrow(tr.id,namedoc.id,descript.id,button.id)};
+    td4.appendChild(button);
+	
+	tr.appendChild(td2);
+	tr.appendChild(td3);
+	tr.appendChild(td4);
+	body.appendChild(tr);
+}
+//////////////////////////////////////////////////////////
+function addnewdoc()
+{
+addrow("Документ","Описание")
+}
+//////////////////////////////////////////////////////////
+function cancel()
+{document.getElementById("Alt_CallBack").value = 'skp:ValueChanged@cancel|0';
+ window.location='skp:ValueChanged@cancel|0';}
+//////////////////////////////////////////////////////////
+function save()
+{
+//layerNames = document.getElementsByName("LayerName");
+//layersColors = document.getElementsByName("LayerColor");
+text="";
+for (idrow=0; idrow<=indexrow; idrow++)
+{
+docname = document.getElementById("namedoc"+idrow+10000);
+if (docname!=undefined)
+ {
+  descript = document.getElementById("descript"+idrow+10000);
+  if (descript!=undefined)
+  {text=text+docname.value+"="+descript.value+"|";}
+ } 
+}
+if (text==""){text="0"}
+document.getElementById("Alt_CallBack").value = 'skp:ValueChanged@changelistdocuments|'+text;
+window.location='skp:ValueChanged@changelistdocuments|'+text;
+}
+//////////////////////////////////////////////////////////
+var text_realdel = "Действительно удалить: ";
+function delrow(rowid,namedocid,descriptid,buttonid)
+{row = document.getElementById(rowid);
+ namedoc=document.getElementById(namedocid);
+ name = namedoc.value;
+ descript = document.getElementById(descriptid);
+ button = document.getElementById(buttonid);
+ if (confirm(text_realdel+namedoc.value+" ["+descript.value+"]?"))
+ {
+ namedoc.parentNode.removeChild(namedoc);
+ descript.parentNode.removeChild(descript);
+ button.parentNode.removeChild(button);
+ row.parentNode.removeChild(row);
+ 
+ document.getElementById("Alt_CallBack").value = 'skp:ValueChanged@delete|'+name;
+ window.location='skp:ValueChanged@delete|'+name;
+ } 
+} 
+function listdocuments_load_succesfull()            //сообщить SU что загрузка произведена
+{
+	message = 'skp:ValueChanged@listdocuments_load_succesfull|0';
+	window.location=message;
+}
+</script>
+</head>
+<link href="animate.css" rel="stylesheet" type="text/css">	
+<style type="text/css">
+	A IMG {border: none;}
+</style>
+<body onload="listdocuments_load_succesfull()">
+	<div align="right">
+	<a href="http://coolpipe.ru/" target="_blank">
+		<img src="../button_icons/logo.png" align="absmiddle" width="150" height="30" >
+	</a>
+	</div>
+	<div class="animated  flipInY ">
+	<div align="center">
+	<font size="2pt"><div id="text_editdoclist">Редактирование списка документов</div></font>
+	</div>
+	<table id="document_options" align="center" border="1">
+	<tbody id="body_doc_list">
+	<tr>
+	<td align="center"><div id="text_namedoc">Наименование документа</div></td>
+	<td align="center" colspan="2"><div id="text_descriptdoc">Описаие документа</div></td>
+	</tr>
+	</tbody>
+	</table>
+	</div>
+	<div align="center">
+		<input type="button" id="newdoc" value="Новый"     onclick="addnewdoc()">
+		<input type="button" id="cancel" value="отмена"    onclick="cancel()">
+		<input type="button" id="save"   value="сохранить" onclick="save()">
+	</div>
+	<br>
+	<div align="center">
+		<font size="1pt"><div id="text_copyright">CoolPipe for SketchUP Interface©</div></font>
+	</div>
+	<div style="display:none">
+	<input id="Alt_CallBack" value="">
+	</div>
+<script type='text/javascript'>
+</script>
+</body>
+</html>

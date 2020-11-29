@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<script type="text/javascript" src="refreshdialog.js"></script>		
+	</head>
+	<link href="animate.css" rel="stylesheet" type="text/css">
+	<style type="text/css">
+	A IMG {border: none;}
+	</style>
+	<body onload="load_succesfull()">
+		<div id="coolReducer_logo" align="right">
+		<a href="http://coolpipe.ru/" target="_blank">
+		<img src="../button_icons/logo.png" align="absmiddle" width="150" height="30" >
+		</a>
+		</div><br>
+		<div class="animated  flipInY ">
+		<table width="450" height="100%" >
+			<tr>
+				<td width="35%"><div id="text_database">База данных:</div></td>
+				<td width="65%">
+				<select id="Base_Type" onclick="fsetactivebase()">
+				</select>
+				<input type="button" name="change_list_bases" value="+/-" onclick="SketchUpCommand('Изменить_список_баз_данных')">
+				</td>
+			</tr>
+			<tr>
+				<td><div id="text_document">Документ:</div></td>
+				<td>
+				<select id="Document_Name" onclick="fsetactivedocument()">
+				</select>
+				<input type="button" name="change_list_documents" value="+/-" onclick="SketchUpCommand('Изменить_список_документов')">
+				</td>
+			</tr>
+			<tr>
+				<td><font size="1"><div id="text_nameofdocument">Наименование документа:</div></font></td>
+				<td><font size="1"><div id="Name_DOC"></div></font></td>
+			</tr>
+			<tr>
+				<td><div id="text_DN1">Ду1:</div></td>
+				<td>
+				<select id="Du1_Select" onclick="fsetactivedu1()"></select>
+				<input type="button" name="change_list_du" value="+/-" onclick="SketchUpCommand('Изменить_список_переходов')">
+				</td>
+			</tr>
+			<tr>
+				<td><div id="text_DN2">Ду2:</div></td>
+				<td>
+				<select id="Du2_Select" onclick="fsetactivedu2()"></select>
+				</td>
+			</tr>
+			<tr>
+				<td><div id="text_namereducer">Наименование:</div></td>
+				<td>
+				<font size="2"><div id="Name_Reducer"></div></font>
+				</td>
+			</tr>
+			<tr>
+				<td><div id="type_connect">Тип присоединения:</div></td>
+				<td>
+					<table>
+					<TBODY>
+						<tr>
+							<td><input type="radio" name="typeconnect_radio" id="typeconnect1" value="typeconnect_standart" checked="true" onclick="SketchUpCommand('тип_присоединения_перехода')"></td>
+							<td width="80"><img src="../html/images/reducer_connect1.png" align="absmiddle" width="47" height="36"></td>
+							<td><input type="radio" name="typeconnect_radio" id="typeconnect2" value="typeconnect_smalltobig" onclick="SketchUpCommand('тип_присоединения_перехода')"></td>
+							<td><img src="../html/images/reducer_connect2.png" align="absmiddle" width="47" height="36"></td>
+						</tr>
+					</TBODY>
+					</table>
+				</td>
+			</tr>
+			
+			<td colspan="2" height="10%">
+			
+			<hr>
+			<br>
+				<div align="center">
+					<input type="button" name="drawbutton" id="text_draw" value="чертить" onclick="SketchUpCommand('чертить_переход')">
+					<input type="button" name="cancelbutton" id="text_cancel" value="отмена" onclick="SketchUpCommand('отмена')">
+				</div>
+			</div> 
+			</td>
+			</tr>
+			
+			<tr>
+			<td colspan="2">
+			<br>
+			
+			<div align="center">
+				<font size="1pt"><div id="text_copyright">CoolPipe for SketchUP Interface©</div></font>
+			</div>
+			
+			</td>
+			</tr>
+			
+			<tr style="display:none">
+			 <td> 
+			 <input id="Alt_CallBack" value="">
+			 </td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

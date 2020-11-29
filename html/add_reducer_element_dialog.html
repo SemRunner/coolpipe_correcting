@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<!--****************************************************************************-->
+<script type='text/javascript'>
+var indexrow = 0;
+
+function addDU()
+{
+addrow("Ду1[мм]","Ду2[мм]","Дн1[мм]","Дн2[мм]","Стенка1[мм]","Стенка2[мм]","Длина[мм]","Масса[кг/м]","Наименование для спецификации")
+}
+
+function addrow(du1,du2,dn1,dn2,st1,st2,dl,mas,name)
+{
+	indexrow = indexrow+1;
+	var body = document.getElementById("body_du_list");
+	var tr = document.createElement("TR");
+	tr.id = "row"+indexrow+10000;
+	
+	var td1 = document.createElement("TD");
+	var namedu1=document.createElement("input");
+	namedu1.type='text';
+	namedu1.id = "namedu1_"+indexrow+10000;
+	namedu1.size=8;
+	namedu1.value=du1;
+	//namedu1.title="Ду 1[мм]";
+	namedu1.style.width="97%";
+	td1.appendChild(namedu1);
+	
+	var td2 = document.createElement("TD");
+	var namedu2=document.createElement("input");
+	namedu2.type='text';
+	namedu2.id = "namedu2_"+indexrow+10000;
+	namedu2.size=8;
+	namedu2.value=du2;
+	//namedu2.title="Ду 2[мм]";
+	namedu2.style.width="97%";
+	td2.appendChild(namedu2)
+	
+	var td3 = document.createElement("TD");
+	var namedn1=document.createElement("input");
+	namedn1.type='text';
+	namedn1.id = "namedn1_"+indexrow+10000;
+	namedn1.size=8;
+	namedn1.value=dn1;
+	//namedn1.title="Дн 1[мм]";
+	namedn1.style.width="97%";
+	td3.appendChild(namedn1);
+	
+	var td4 = document.createElement("TD");
+	var namedn2=document.createElement("input");
+	namedn2.type='text';
+	namedn2.id = "namedn2_"+indexrow+10000;
+	namedn2.size=8;
+	namedn2.value=dn2;
+	//namedn2.title="Дн 2[мм]";
+	namedn2.style.width="97%";
+	td4.appendChild(namedn2);
+	
+	var td5 = document.createElement("TD");
+	var namest1=document.createElement("input");
+	namest1.type='text';
+	namest1.id = "namest1_"+indexrow+10000;
+	namest1.size=10;
+	namest1.value=st1;
+	//namest1.title="Толщина стенки 1[мм]";
+	namest1.style.width="97%";
+	td5.appendChild(namest1);
+	
+	var td6 = document.createElement("TD");
+	var namest2=document.createElement("input");
+	namest2.type='text';
+	namest2.id = "namest2_"+indexrow+10000;
+	namest2.size=10;
+	namest2.value=st2;
+	//namest2.title="Толщина стенки 2[мм]";
+	namest2.style.width="97%";
+	td6.appendChild(namest2);
+	
+	var td7 = document.createElement("TD");
+	var dlina=document.createElement("input");
+	dlina.type='text';
+	dlina.id = "dlina"+indexrow+10000;
+	dlina.size=10;
+	dlina.value=dl;
+	//dlina.title="Длина перехода [мм]";
+	dlina.style.width="97%";
+	td7.appendChild(dlina);
+	
+	var td8 = document.createElement("TD");
+	var namemas=document.createElement("input");
+	namemas.type='text';
+	namemas.id = "namemas"+indexrow+10000;
+	namemas.size=10;
+	namemas.value=mas;
+	//namemas.title="Масса [кг/м]";
+	namemas.style.width="97%";
+	td8.appendChild(namemas);
+	
+	var td9 = document.createElement("TD");
+	var nametube=document.createElement("input");
+	nametube.type='text';
+	nametube.id = "nametube"+indexrow+10000;
+	nametube.size=40;
+	nametube.value=name;
+	nametube.style.width="97%";
+	//nametube.title="Наименование для спецификации";
+	td9.appendChild(nametube);
+	
+	var td10 = document.createElement("TD");
+	var button=document.createElement("input");
+	button.type = 'button';
+	button.name = 'del'+indexrow;
+	button.value = 'X';
+	button.id = indexrow+10000;
+	button.onclick=function () {delrow(tr.id,namedu1.id,namedu2.id,namedn1.id,namedn2.id,namest1.id,namest2.id,dlina.id,namemas.id,nametube.id,button.id)};
+    td10.appendChild(button);
+	
+	tr.appendChild(td1);
+	tr.appendChild(td2);
+	tr.appendChild(td3);
+	tr.appendChild(td4);
+	tr.appendChild(td5);
+	tr.appendChild(td6);
+	tr.appendChild(td7);
+	tr.appendChild(td8);
+	tr.appendChild(td9);
+	tr.appendChild(td10);
+	body.appendChild(tr);
+}
+
+function cancel()
+{document.getElementById("Alt_CallBack").value = 'skp:ValueChanged@cancel|0';
+ window.location='skp:ValueChanged@cancel|0';}
+ 
+function save()
+{
+text="";
+for (idrow=0; idrow<=indexrow; idrow++)
+{
+du1 = document.getElementById("namedu1_"+idrow+10000);
+du2 = document.getElementById("namedu2_"+idrow+10000);
+dn1 = document.getElementById("namedn1_"+idrow+10000);
+dn2 = document.getElementById("namedn2_"+idrow+10000);
+st1 = document.getElementById("namest1_"+idrow+10000);
+st2 = document.getElementById("namest2_"+idrow+10000);
+dl  = document.getElementById("dlina"+idrow+10000);
+ms = document.getElementById("namemas"+idrow+10000);
+nt = document.getElementById("nametube"+idrow+10000);
+if ((du1!=undefined) && (dn1!=undefined) && (st1!=undefined) && (ms!=undefined) && (nt!=undefined))
+ {
+text=text+du1.value+"="+du2.value+"="+dn1.value+"="+dn2.value+"="+st1.value+"="+st2.value+"="+dl.value+"="+ms.value+"="+nt.value+"|";
+ } 
+}
+if (text==""){text="0"}
+document.getElementById("Alt_CallBack").value = "changelistreducerselements|"+text;
+window.location='skp:ValueChanged@changelistreducerselements|readalt';
+}
+var text_realdel = "Действительно удалить: ";
+function delrow(rowid,du1,du2,dn1,dn2,st1,st2,dlina,mas,nametube,button)
+{row = document.getElementById(rowid);
+ du1id=document.getElementById(du1);
+ du2id=document.getElementById(du2);
+ name = du1id.value+"x"+du2id.value;
+ dn1id = document.getElementById(dn1);
+ dn2id = document.getElementById(dn2);
+ st1id=document.getElementById(st1);
+ st2id=document.getElementById(st2);
+ dlid=document.getElementById(dlina);
+ masid = document.getElementById(mas);
+ nameid=document.getElementById(nametube);
+ buttonid = document.getElementById(button);
+ if (confirm(text_realdel+nameid.value))
+ {
+ du1id.parentNode.removeChild(du1id);
+ du2id.parentNode.removeChild(du2id);
+ dn1id.parentNode.removeChild(dn1id);
+ dn2id.parentNode.removeChild(dn2id);
+ st1id.parentNode.removeChild(st1id);
+ st2id.parentNode.removeChild(st2id);
+ dlid.parentNode.removeChild(dlid);
+ masid.parentNode.removeChild(masid);
+ nameid.parentNode.removeChild(nameid);
+ buttonid.parentNode.removeChild(buttonid);
+ row.parentNode.removeChild(row);
+ 
+ document.getElementById("Alt_CallBack").value = 'skp:ValueChanged@delete|'+name;
+ window.location='skp:ValueChanged@delete|'+name;
+ }
+}
+
+function listdocuments_load_succesfull()            //сообщить SU что загрузка произведена
+{
+	message = 'skp:ValueChanged@listdu_load_succesfull|0';
+	window.location=message;
+}
+</script>
+<!--****************************************************************************-->
+</head>
+<link href="animate.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+	A IMG {border: none;}
+</style>
+<body onload="listdocuments_load_succesfull()">
+	<div align="right">
+	<a href="http://coolpipe.ru/" target="_blank">
+		<img src="../button_icons/logo.png" align="absmiddle" width="150" height="30" >
+	</a>
+	</div>
+	<div class="animated  flipInY ">
+	<div align="center">
+	<font size="2pt"><div id="text_editlistreducers">Редактирование списка переходов</div></font>
+	</div>
+	<table id="du_options" align="center" border="1" width="750">
+	<tbody id="body_du_list">
+	<tr>
+	<td align="center"><div id="text_DiametrUslov1">Диаметр<br>условный 1 [мм]</div></td>
+	<td align="center"><div id="text_DiametrUslov2">Диаметр<br>условный 2 [мм]</div></td>
+	<td align="center"><div id="text_DiametrNar1">Диаметр<br>наружний 1 [мм]</div></td>
+	<td align="center"><div id="text_DiametrNar2">Диаметр<br>наружний 2 [мм]</div></td>
+	<td align="center"><div id="text_Stenka1">Толщина<br>стенки 1 [мм]</div></td>
+	<td align="center"><div id="text_Stenka2">Толщина<br>стенки 2 [мм]</div></td>
+	<td align="center"><div id="text_LengthReducer">Длина<br>перехода [мм]</div></td>
+	<td align="center"><div id="text_MassaReducer">Масса<br>[кг]</div></td>
+	<td align="center" colspan="2"><div id="text_NameForSpec">Наименование для<br>спецификации</div></td>
+	</tr>
+	</tbody>
+	</table>
+	</div>
+	<div align="center">
+		<input type="button" id="newdoc" value="Новый"     onclick="addDU()">
+		<input type="button" id="cancel" value="отмена"    onclick="cancel()">
+		<input type="button" id="save"   value="сохранить" onclick="save()">
+	</div>
+	<br>
+	<div align="center">
+		<font size="1pt"><div id="text_copyright">CoolPipe for SketchUP Interface©</div></font>
+	</div>
+	<div style="display:none">
+	<input id="Alt_CallBack" value="">
+	</div>
+</body>
+</html>

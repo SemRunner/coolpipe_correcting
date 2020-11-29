@@ -1,0 +1,502 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<title>CoolPipe Dialog - add layers</title>
+		
+<!--****************************************************************************-->
+<script type='text/javascript'>
+var indexrow = 0;
+var sel_color="";
+var editinglayer = "";
+
+function addlayer()
+{
+addrow('слой '+(indexrow+1),'rgb(255,0,0)')
+}
+//////////////////////////////////////////////////////////////////////////////////////
+function addrow(namelayer,color)
+{
+	indexrow = indexrow +1;
+	var tbody = document.getElementById("layersoption");
+	var row = document.createElement("TR");
+	row.id="row"+10000+indexrow;
+    var td2 = document.createElement("TD");
+	var text1=document.createElement("input");
+	text1.type = "text";
+	text1.size=40;
+	text1.value=namelayer;
+	text1.name="LayerName";
+	text1.id = "layer"+10000+indexrow;
+    td2.appendChild(text1);	
+	
+	var td3 = document.createElement("TD");
+	var elcolor=document.createElement("input");
+	elcolor.type='button';
+	elcolor.style.backgroundColor=color;
+	elcolor.id = "color"+10000+indexrow;
+	elcolor.name="LayerColor";
+	elcolor.value=color;
+	elcolor.style.width = 150;
+	elcolor.onclick=function () {change_color(text1.value,elcolor.id,color)};
+	td3.appendChild(elcolor);
+	
+	var td4 = document.createElement("TD");
+	var button=document.createElement("input");
+	button.type = 'button';
+	button.name = 'del'+10000+indexrow;
+	button.value = 'X';
+	button.onclick=function () {delrow(row.id,text1.id,elcolor.id)};
+	button.id = 'del'+10000+indexrow;
+    td4.appendChild(button);
+	
+    row.appendChild(td2);
+	row.appendChild(td3);
+	row.appendChild(td4);
+    tbody.appendChild(row);
+}
+//////////////////////////////////////////////////////////////////////////////////////
+function cancel()
+{window.location='skp:ValueChanged@cancel|0';}
+//////////////////////////////////////////////////////////////////////////////////////
+function save()
+{
+//layerNames = document.getElementsByName("LayerName");
+//layersColors = document.getElementsByName("LayerColor");
+text="";
+for (idrow=0; idrow<=indexrow; idrow++)
+{
+layerName = document.getElementById("layer"+10000+idrow);
+if (layerName!=undefined)
+ {
+  layerColor = document.getElementById("color"+10000+idrow);
+  if (layerColor!=undefined)
+  {text=text+layerName.value+"="+layerColor.value+"|";}
+ } 
+}
+window.location='skp:ValueChanged@changelistlayers|'+text;
+}
+//////////////////////////////////////////////////////////////////////////////////////
+
+var text_realdel = "Действительно удалить: ";
+function delrow(rowid,textid,colorid)
+{row = document.getElementById(rowid);
+ textid=document.getElementById(textid);
+ name = textid.value
+ colorid = document.getElementById(colorid);
+ if (confirm(text_realdel+"["+name+"] ?"))
+ {
+ textid.parentNode.removeChild(textid);
+ colorid.parentNode.removeChild(colorid);
+ row.parentNode.removeChild(row);
+ document.getElementById("Alt_CallBack").value = 'skp:ValueChanged@delete|'+name;
+ window.location='skp:ValueChanged@delete|'+name;
+ } 
+} 
+//////////////////////////////////////////////////////////////////////////////////////
+function listbase_load_succesfull()            //сообщить SU что загрузка произведена
+{
+	message = 'skp:ValueChanged@listlayers_load_succesfull|0';
+	window.location=message;
+}
+//////////////////////////////////////////////////////////////////////////////////////
+function selected_td(elem)
+{
+td = document.getElementById('color_selected');
+name = document.getElementById('color_name');
+
+color = elem.id;
+sel_color = color;
+name.innerHTML=color;
+td.style.background = color;
+}
+//////////////////////////////////////////////////////////////////////////////////////
+var colorpickershow = false;
+function showcolorpicker()
+{
+picker = document.getElementById('colorpicker');
+layers = document.getElementById('layers_edit');
+if (colorpickershow==false)
+{
+layers.style.display = "none";
+picker.style.display = "";
+colorpickershow = true;
+}
+else
+{
+layers.style.display = "";
+picker.style.display = "none";
+colorpickershow = false;
+}
+}
+//////////////////////////////////////////////////////////////////////////////////////
+var text_editcolor = "Редактирование цвета слоя "
+function change_color(namelayer,color_id,color)
+{
+desript = document.getElementById('namelayer_edit');
+desript.innerHTML = text_editcolor + "[ "+namelayer+" ]";
+sel_col = document.getElementById('color_selected');
+sel_col.style.background = color;
+editinglayer = document.getElementById(color_id);
+showcolorpicker();
+}
+//////////////////////////////////////////////////////////////////////////////////////
+function change_color_fromsel()
+{
+editinglayer.style.background = sel_color;
+editinglayer.value = sel_color;
+}
+</script>
+<!--****************************************************************************-->
+</head>
+<style type="text/css">
+	A IMG {border: none;}
+</style>
+<body onload="listbase_load_succesfull()">
+	<div align="right">
+	<a href="http://coolpipe.ru/" target="_blank">
+	<img src="../button_icons/logo.png" align="absmiddle" width="150" height="30" >
+	</a>
+	</div>
+	
+	<div id="layers_edit">
+	<div align="center">
+	<table border="1">
+	<tbody id='layersoption'>
+	<tr>
+	<td align="center"><div id="text_namelayer">Имя слоя</div></td>
+	<td align="center" colspan="2"><div id="text_color">Цвет</div></td>
+	</tr>
+	</tbody>
+	</table>
+	
+	<input type="button" id="newlayer" value="Новый" onclick="addlayer()">
+	<input type="button" id="cancel" value="отмена" onclick="cancel()">
+	<input type="button" id="save" value="сохранить" onclick="save()">
+	<br>
+	</div>
+	</div>
+	<!---------------------------------------------------------------->
+	<!---------------------------------------------------------------->
+	<!---------------------------------------------------------------->
+<div id="colorpicker" style="display:none">
+<div align="center">
+	<font size="3pt"><div id="namelayer_edit">Редактирование цвета слоя</div></font>
+<table id="cp_color_picker" cellspacing="1" cellpadding="1" border="1" width="600" height="450">
+<tbody>
+<tr> 
+	<td id="rgb(38,0,0)"  style="background-color: rgb(38,0,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,9,0)"  style="background-color: rgb(38,9,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,19,0)" style="background-color: rgb(38,19,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,28,0)" style="background-color: rgb(38,28,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,38,0)" style="background-color: rgb(38,38,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(28,38,0)" style="background-color: rgb(28,38,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,38,0)" style="background-color: rgb(19,38,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(9,38,0)"  style="background-color: rgb(9,38,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,38,0)"  style="background-color: rgb(0,38,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,38,9)"  style="background-color: rgb(0,38,9)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,38,19)" style="background-color: rgb(0,38,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,38,28)" style="background-color: rgb(0,38,28)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,38,38)" style="background-color: rgb(0,38,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,28,38)" style="background-color: rgb(0,28,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,19,38)" style="background-color: rgb(0,19,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,9,38)"  style="background-color: rgb(0,9,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,0,38)"  style="background-color: rgb(0,0,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(9,0,38)"  style="background-color: rgb(9,0,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,0,38)" style="background-color: rgb(19,0,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(28,0,38)" style="background-color: rgb(28,0,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,0,38)" style="background-color: rgb(38,0,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,0,28)" style="background-color: rgb(38,0,28)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,0,19)" style="background-color: rgb(38,0,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,0,9)"  style="background-color: rgb(28,0,9)"onclick="selected_td(this)">&nbsp </td>
+</tr>
+<tr>
+	<td id="rgb(76,0,0)"  style="background-color: rgb(127,0,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,19,0)" style="background-color: rgb(127,19,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,38,0)" style="background-color: rgb(127,38,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,57,0)" style="background-color: rgb(127,57,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,76,0)" style="background-color: rgb(127,76,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(57,76,0)" style="background-color: rgb(57,76,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,76,0)" style="background-color: rgb(38,76,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,76,0)" style="background-color: rgb(19,76,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,76,0)"  style="background-color: rgb(0,76,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,76,19)" style="background-color: rgb(0,76,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,76,38)" style="background-color: rgb(0,76,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,76,57)" style="background-color: rgb(0,76,57)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,76,76)" style="background-color: rgb(0,76,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,57,76)" style="background-color: rgb(0,57,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,38,76)" style="background-color: rgb(0,38,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,19,76)" style="background-color: rgb(0,19,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,0,76)"  style="background-color: rgb(0,0,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,0,76)" style="background-color: rgb(19,0,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,0,76)" style="background-color: rgb(38,0,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(57,0,76)" style="background-color: rgb(57,0,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,0,76)" style="background-color: rgb(76,0,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,0,57)" style="background-color: rgb(76,0,57)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,0,38)" style="background-color: rgb(76,0,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,0,19)" style="background-color: rgb(76,0,19)"onclick="selected_td(this)">&nbsp </td>
+</tr>
+<tr>
+	<td id="rgb(127,0,0)"  style="background-color: rgb(127,0,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,31,0)" style="background-color: rgb(127,31,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,63,0)"  style="background-color: rgb(127,63,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,95,0)"  style="background-color: rgb(127,95,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,127,0)"  style="background-color: rgb(127,127,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(95,127,0)"  style="background-color: rgb(95,127,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,127,0)"  style="background-color: rgb(63,127,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(31,127,0)"  style="background-color: rgb(31,127,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,127,0)"  style="background-color: rgb(0,127,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,127,31)"  style="background-color: rgb(0,127,31)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,127,63)"  style="background-color: rgb(0,127,63)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,127,95)"  style="background-color: rgb(0,127,95)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,127,127)"  style="background-color: rgb(0,127,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,95,127)"  style="background-color: rgb(0,95,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,63,127)"  style="background-color: rgb(0,63,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,31,127)"  style="background-color: rgb(0,31,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,0,127)"  style="background-color: rgb(0,0,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(31,0,127)"  style="background-color: rgb(31,0,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,0,127)"  style="background-color: rgb(63,0,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(95,0,127)"  style="background-color: rgb(95,0,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,0,127)"  style="background-color: rgb(127,0,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,0,95)"  style="background-color: rgb(127,0,95)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,0,63)"  style="background-color: rgb(127,0,63)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,0,31)"  style="background-color: rgb(127,0,31)"onclick="selected_td(this)">&nbsp </td>
+</tr>
+<tr>
+
+	<td id="rgb(165,0,0)"  style="background-color: rgb(165,0,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,41,0)"  style="background-color: rgb(165,41,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,82,0)"  style="background-color: rgb(165,82,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,124,0)"  style="background-color: rgb(165,124,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,165,0)"  style="background-color: rgb(165,165,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(124,165,0)"  style="background-color: rgb(124,165,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(82,165,0)"  style="background-color: rgb(82,165,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(41,165,0)"  style="background-color: rgb(41,165,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,165,0)"  style="background-color: rgb(0,165,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,165,41)"  style="background-color: rgb(0,165,41)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,165,82)"  style="background-color: rgb(0,165,82)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,165,124)"  style="background-color: rgb(0,165,124)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,165,165)"  style="background-color: rgb(0,165,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,124,165)"  style="background-color: rgb(0,124,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,82,165)"  style="background-color: rgb(0,82,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,41,165)"  style="background-color: rgb(0,41,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,0,165)"  style="background-color: rgb(0,0,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(41,0,165)"  style="background-color: rgb(41,0,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(82,0,165)"  style="background-color: rgb(82,0,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(124,0,165)"  style="background-color: rgb(124,0,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,0,165)"  style="background-color: rgb(165,0,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,0,124)"  style="background-color: rgb(165,0,124)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,0,82)"  style="background-color: rgb(165,0,82)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,0,41)"  style="background-color: rgb(165,0,41)"onclick="selected_td(this)">&nbsp </td>
+</tr>
+<tr>
+	<td id="rgb(255,0,0)"  style="background-color: rgb(255,0,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,63,0)"  style="background-color: rgb(255,63,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,127,0)"  style="background-color: rgb(255,127,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,191,0)"  style="background-color: rgb(255,191,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,255,0)"  style="background-color: rgb(255,255,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(191,255,0)"  style="background-color: rgb(191,255,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,255,0)"  style="background-color: rgb(127,255,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,255,0)"  style="background-color: rgb(63,255,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,255,0)"  style="background-color: rgb(0,255,0)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,255,63)"  style="background-color: rgb(0,255,63)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,255,127)"  style="background-color: rgb(0,255,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,255,191)"  style="background-color: rgb(0,255,191)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,255,255)"  style="background-color: rgb(0,255,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,191,255)"  style="background-color: rgb(0,191,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,127,255)"  style="background-color: rgb(0,127,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,63,255)"  style="background-color: rgb(0,63,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(0,0,255)"  style="background-color: rgb(0,0,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,0,255)"  style="background-color: rgb(63,0,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,0,255)"  style="background-color: rgb(127,0,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(191,0,255)"  style="background-color: rgb(191,0,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,0,255)"  style="background-color: rgb(255,0,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,0,191)"  style="background-color: rgb(255,0,191)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,0,127)"  style="background-color: rgb(255,0,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,0,63)"  style="background-color: rgb(255,0,63)"onclick="selected_td(this)">&nbsp </td>
+</tr>
+<tr>
+	<td id="rgb(255,127,127)"  style="background-color: rgb(255,127,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,159,127)"  style="background-color: rgb(255,159,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,191,127)"  style="background-color: rgb(255,191,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,223,127)"  style="background-color: rgb(255,223,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,255,127)"  style="background-color: rgb(255,255,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(223,255,127)"  style="background-color: rgb(223,255,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(191,255,127)"  style="background-color: rgb(191,255,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(159,255,127)"  style="background-color: rgb(159,255,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,255,127)"  style="background-color: rgb(127,255,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,255,159)"  style="background-color: rgb(127,255,159)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,255,191)"  style="background-color: rgb(127,255,191)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,255,223)"  style="background-color: rgb(127,255,223)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,255,255)"  style="background-color: rgb(127,255,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,223,255)"  style="background-color: rgb(127,223,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,191,255)"  style="background-color: rgb(127,191,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,159,255)"  style="background-color: rgb(127,159,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,127,255)"  style="background-color: rgb(127,127,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(159,127,255)"  style="background-color: rgb(159,127,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(191,127,255)"  style="background-color: rgb(191,127,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(223,127,255)"  style="background-color: rgb(223,127,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,127,255)"  style="background-color: rgb(255,127,255)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,127,223)"  style="background-color: rgb(255,127,223)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,127,191)"  style="background-color: rgb(255,127,191)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(255,127,159)"  style="background-color: rgb(255,127,159)"onclick="selected_td(this)">&nbsp </td>
+</tr>
+<tr>
+	<td id="rgb(165,82,82)"  style="background-color: rgb(165,82,82)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,103,82)"  style="background-color: rgb(165,103,82)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,124,82)"  style="background-color: rgb(165,124,82)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,145,82)"  style="background-color: rgb(165,145,82)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,165,82)"  style="background-color: rgb(165,165,82)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(145,165,82)"  style="background-color: rgb(145,165,82)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(124,165,82)"  style="background-color: rgb(124,165,82)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(103,165,82)"  style="background-color: rgb(103,165,82)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(82,165,82)"  style="background-color: rgb(82,165,82)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(82,165,103)"  style="background-color: rgb(82,165,103)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(82,165,124)"  style="background-color: rgb(82,165,124)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(82,165,145)"  style="background-color: rgb(82,165,145)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(82,165,165)"  style="background-color: rgb(82,165,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(82,145,165)"  style="background-color: rgb(82,145,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(82,124,165)"  style="background-color: rgb(82,124,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(82,103,165)"  style="background-color: rgb(82,103,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(82,82,165)"  style="background-color: rgb(82,82,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(103,82,165)"  style="background-color: rgb(103,82,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(124,82,165)"  style="background-color: rgb(124,82,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(145,82,165)"  style="background-color: rgb(145,82,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,82,165)"  style="background-color: rgb(165,82,165)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,82,145)"  style="background-color: rgb(165,82,145)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,82,124)"  style="background-color: rgb(165,82,124)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(165,82,103)"  style="background-color: rgb(165,82,103)"onclick="selected_td(this)">&nbsp </td>
+</tr>
+<tr>
+	<td id="rgb(127,63,63)"  style="background-color: rgb(127,63,63)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,79,63)"  style="background-color: rgb(127,79,63)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,95,63)"  style="background-color: rgb(127,95,63)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,111,63)"  style="background-color: rgb(127,111,63)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,127,63)"  style="background-color: rgb(127,127,63)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(111,127,63)"  style="background-color: rgb(111,127,63)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(95,127,63)"  style="background-color: rgb(95,127,63)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(79,127,63)"  style="background-color: rgb(79,127,63)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,127,63)"  style="background-color: rgb(63,127,63)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,127,79)"  style="background-color: rgb(63,127,79)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,127,95)"  style="background-color: rgb(63,127,95)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,127,111)"  style="background-color: rgb(63,127,111)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,127,127)"  style="background-color: rgb(63,127,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,111,127)"  style="background-color: rgb(63,111,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,95,127)"  style="background-color: rgb(63,95,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,79,127)"  style="background-color: rgb(63,79,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(63,63,127)"  style="background-color: rgb(63,63,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(79,63,127)"  style="background-color: rgb(79,63,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(95,63,127)"  style="background-color: rgb(95,63,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(111,63,127)"  style="background-color: rgb(111,63,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,63,127)"  style="background-color: rgb(127,63,127)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,63,111)"  style="background-color: rgb(127,63,111)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,63,95)"  style="background-color: rgb(127,63,95)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(127,63,79)"  style="background-color: rgb(127,63,79)"onclick="selected_td(this)">&nbsp </td>
+</tr>
+<tr>
+	<td id="rgb(76,38,38)"  style="background-color: rgb(76,38,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,47,38)"  style="background-color: rgb(76,47,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,57,38)"  style="background-color: rgb(76,57,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,66,38)"  style="background-color: rgb(76,66,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,76,38)"  style="background-color: rgb(76,76,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(66,76,38)"  style="background-color: rgb(66,76,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(57,76,38)"  style="background-color: rgb(57,76,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(47,76,38)"  style="background-color: rgb(47,76,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,76,38)"  style="background-color: rgb(38,76,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,76,47)"  style="background-color: rgb(38,76,47)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,76,57)"  style="background-color: rgb(38,76,57)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,76,66)"  style="background-color: rgb(38,76,66)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,76,76)"  style="background-color: rgb(38,76,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,66,76)"  style="background-color: rgb(38,66,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,57,76)"  style="background-color: rgb(38,57,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,47,76)"  style="background-color: rgb(38,47,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,38,76)"  style="background-color: rgb(38,38,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(47,38,76)"  style="background-color: rgb(47,38,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(57,38,76)"  style="background-color: rgb(57,38,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(66,38,76)"  style="background-color: rgb(66,38,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,38,76)"  style="background-color: rgb(76,38,76)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,38,66)"  style="background-color: rgb(76,38,66)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,38,57)"  style="background-color: rgb(76,38,57)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(76,38,47)"  style="background-color: rgb(76,38,47)"onclick="selected_td(this)">&nbsp </td>
+</tr>
+<tr>
+	<td id="rgb(38,19,19)"  style="background-color: rgb(38,19,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,23,19)"  style="background-color: rgb(38,23,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,28,19)"  style="background-color: rgb(38,28,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,33,19)"  style="background-color: rgb(38,33,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,38,19)"  style="background-color: rgb(38,38,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(33,38,19)"  style="background-color: rgb(33,38,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(28,38,19)"  style="background-color: rgb(28,38,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(23,38,19)"  style="background-color: rgb(23,38,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,38,19)"  style="background-color: rgb(19,38,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,88,23)"  style="background-color: rgb(19,88,23)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,88,28)"  style="background-color: rgb(19,88,28)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,88,88)"  style="background-color: rgb(19,88,88)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,88,88)"  style="background-color: rgb(19,88,88)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,88,88)"  style="background-color: rgb(19,88,88)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,28,88)"  style="background-color: rgb(19,28,88)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,23,88)"  style="background-color: rgb(19,23,88)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,19,88)"  style="background-color: rgb(19,19,88)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(23,19,88)"  style="background-color: rgb(23,19,88)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(28,19,88)"  style="background-color: rgb(28,19,88)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(88,19,88)"  style="background-color: rgb(88,19,88)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(88,19,88)"  style="background-color: rgb(88,19,88)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(88,19,88)"  style="background-color: rgb(88,19,88)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(88,19,28)"  style="background-color: rgb(88,19,28)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(88,19,23)"  style="background-color: rgb(88,19,23)"onclick="selected_td(this)">&nbsp </td>
+</tr>
+<tr>
+	<td id="rgb(38,19,19)"  style="background-color: rgb(38,19,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,23,19)"  style="background-color: rgb(38,23,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,28,19)"  style="background-color: rgb(38,28,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,33,19)"  style="background-color: rgb(38,33,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,38,19)"  style="background-color: rgb(38,38,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(33,38,19)"  style="background-color: rgb(33,38,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(28,38,19)"  style="background-color: rgb(28,38,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(23,38,19)"  style="background-color: rgb(23,38,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,38,19)"  style="background-color: rgb(19,38,19)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,38,23)"  style="background-color: rgb(19,38,23)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,38,28)"  style="background-color: rgb(19,38,28)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,38,33)"  style="background-color: rgb(19,38,33)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,38,38)"  style="background-color: rgb(19,38,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,33,38)"  style="background-color: rgb(19,33,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,28,38)"  style="background-color: rgb(19,28,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,23,38)"  style="background-color: rgb(19,23,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(19,19,38)"  style="background-color: rgb(19,19,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(23,19,38)"  style="background-color: rgb(23,19,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(28,19,38)"  style="background-color: rgb(28,19,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(33,19,38)"  style="background-color: rgb(33,19,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,19,38)"  style="background-color: rgb(38,19,38)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,19,33)"  style="background-color: rgb(38,19,33)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,19,28)"  style="background-color: rgb(38,19,28)"onclick="selected_td(this)">&nbsp </td>
+	<td id="rgb(38,19,23)"  style="background-color: rgb(38,19,23)"onclick="selected_td(this)">&nbsp </td>
+</tr>
+<tr>
+	<td colspan="24" height="150">
+	<div align="center"><div id="text_selectedcolor">Выбранный цвет:</div><div id="color_name"></div>
+	<table border="1">
+		<tr valign="top">
+		<td id="color_selected" style="background-color: rgb(255,0,0)" width="100" height="100"></td>
+		</tr>
+	</table>
+	</div>
+	</td>
+</tr>
+</tbody>
+</table>
+<br>
+<input type="button" id="save_color"   value="принять" onclick="showcolorpicker();change_color_fromsel();">
+<input type="button" id="cancel_color" value="отмена"  onclick="showcolorpicker()">
+</div></div>
+	
+	<!---------------------------------------------------------------->
+	<!---------------------------------------------------------------->
+	<!---------------------------------------------------------------->
+	<div align="center">
+		<font size="1pt"><div id="text_copyright">CoolPipe for SketchUP Interface©</div></font>
+	</div>
+	<div style="display:none">
+	<input id="Alt_CallBack" value="">
+	</div>
+	</body>
+</html>

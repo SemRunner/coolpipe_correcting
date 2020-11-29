@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<!--****************************************************************************-->
+<script type='text/javascript'>
+var indexrow = 0;
+
+function addDU()
+{
+addrow("Ду[мм]","D1[мм]","D2[мм]","D3[мм]","D4[мм]","h1[мм]","h2[мм]","h3[мм]","d[мм]","n[шт]","Наименование для спецификации")
+}
+
+function addrow(du,d1,d2,d3,d4,h1,h2,h3,d,n,name)
+{
+	indexrow = indexrow+1;
+	var body = document.getElementById("body_du_list");
+	var tr = document.createElement("TR");
+	tr.id = "row"+(indexrow+10000);
+	
+	var td1 = document.createElement("TD");
+	var namedu=document.createElement("input");
+	namedu.type='text';
+	namedu.id = "namedu"+(indexrow+10000);
+	namedu.size=8;
+	namedu.value=du;
+	//namedu.title="Ду [мм]";
+	namedu.style.width="97%";
+	td1.appendChild(namedu);
+	
+	var td2 = document.createElement("TD");
+	var d1el=document.createElement("input");
+	d1el.type='text';
+	d1el.id = "d1_"+(indexrow+10000);
+	d1el.value=d1;
+	//d1el.title="D1 [мм]";
+	d1el.style.width="97%";
+	td2.appendChild(d1el)
+	
+	var td3 = document.createElement("TD");
+	var d2el=document.createElement("input");
+	d2el.type='text';
+	d2el.id = "d2_"+(indexrow+10000);
+	d2el.value=d2;
+	//d2el.title="D2 [мм]";
+	d2el.style.width="97%";
+	td3.appendChild(d2el);
+	
+	var td4 = document.createElement("TD");
+	var d3el=document.createElement("input");
+	d3el.type='text';
+	d3el.id = "d3_"+(indexrow+10000);
+	d3el.value=d3;
+	//d3el.title="D3 [мм]";
+	d3el.style.width="97%";
+	td4.appendChild(d3el);
+	
+	var td5 = document.createElement("TD");
+	var d4el=document.createElement("input");
+	d4el.type='text';
+	d4el.id = "d4_"+(indexrow+10000);
+	d4el.value=d4;
+	//d4el.title="D4 [мм]";
+	d4el.style.width="97%";
+	td5.appendChild(d4el);
+	
+	var td6 = document.createElement("TD");
+	var h1el=document.createElement("input");
+	h1el.type='text';
+	h1el.id = "h1_"+(indexrow+10000);
+	h1el.value=h1;
+	//h1el.title="h1[мм]";
+	h1el.style.width="97%";
+	td6.appendChild(h1el);
+	
+	var td7 = document.createElement("TD");
+	var h2el=document.createElement("input");
+	h2el.type='text';
+	h2el.id = "h2_"+(indexrow+10000);
+	h2el.value=h2;
+	//h2el.title="h2[мм]";
+	h2el.style.width="97%";
+	td7.appendChild(h2el);
+	
+	var td8 = document.createElement("TD");
+	var h3el=document.createElement("input");
+	h3el.type='text';
+	h3el.id = "h3_"+(indexrow+10000);
+	h3el.value=h3;
+	//h3el.title="h3[мм]";
+	h3el.style.width="97%";
+	td8.appendChild(h3el);
+	
+	var td9 = document.createElement("TD");
+	var delem=document.createElement("input");
+	delem.type='text';
+	delem.id = "d_"+(indexrow+10000);
+	delem.value=d;
+	//delem.title="d[мм]";
+	delem.style.width="97%";
+	td9.appendChild(delem);
+	
+	var td10 = document.createElement("TD");
+	var nelem=document.createElement("input");
+	nelem.type='text';
+	nelem.id = "n_"+(indexrow+10000);
+	nelem.value=n;
+	//nelem.title="n[шт]";
+	nelem.style.width="97%";
+	td10.appendChild(nelem);
+	
+	var td11 = document.createElement("TD");
+	var nametube=document.createElement("input");
+	nametube.type='text';
+	nametube.id = "nametube_"+(indexrow+10000);
+	nametube.size=30;
+	nametube.value=name;
+	nametube.style.width="97%";
+	//nametube.title="Наименование для спецификации";
+	td11.appendChild(nametube);
+	
+	var td12 = document.createElement("TD");
+	var button=document.createElement("input");
+	button.type = 'button';
+	button.name = 'del'+indexrow;
+	button.value = 'X';
+	button.id = indexrow+10000;
+	button.onclick=function () {delrow(tr.id,namedu.id,d1el.id,d2el.id,d3el.id,d4el.id,h1el.id,h2el.id,h3el.id,delem.id,nelem.id,nametube.id,button.id)};
+    td12.appendChild(button);
+	
+	tr.appendChild(td1);
+	tr.appendChild(td2);
+	tr.appendChild(td3);
+	tr.appendChild(td4);
+	tr.appendChild(td5);
+	tr.appendChild(td6);
+	tr.appendChild(td7);
+	tr.appendChild(td8);
+	tr.appendChild(td9);
+	tr.appendChild(td10);
+	tr.appendChild(td11);
+	tr.appendChild(td12);
+	body.appendChild(tr);
+}
+
+function cancel()
+{document.getElementById("Alt_CallBack").value = 'skp:ValueChanged@cancel|0';
+ window.location='skp:ValueChanged@cancel|0';}
+ 
+function save()
+{
+text="";
+for (idrow=0; idrow<=indexrow; idrow++)
+{
+du=document.getElementById("namedu"+(idrow+10000));
+d1 = document.getElementById("d1_"+(idrow+10000));
+d2 = document.getElementById("d2_"+(idrow+10000));
+d3 = document.getElementById("d3_"+(idrow+10000));
+d4 = document.getElementById("d4_"+(idrow+10000));
+
+h1 = document.getElementById("h1_"+(idrow+10000));
+h2 = document.getElementById("h2_"+(idrow+10000));
+h3 = document.getElementById("h3_"+(idrow+10000));
+d = document.getElementById("d_"+(idrow+10000));
+n = document.getElementById("n_"+(idrow+10000));
+nameflange = document.getElementById("nametube_"+(idrow+10000));
+
+if ((du!=undefined) && (d1!=undefined) && (d2!=undefined) && (d3!=undefined) && (d4!=undefined) && (h1!=undefined) && (h2!=undefined)&& (h3!=undefined)&& (d!=undefined)&& (n!=undefined)&& (nameflange!=undefined))
+ {
+text=text+du.value+";"+d1.value+";"+d2.value+";"+d3.value+";"+d4.value+";"+h1.value+";"+h2.value+";"+h3.value+";"+d.value+";"+n.value+";"+nameflange.value+"|";
+ } 
+}
+if (text==""){text="0"}
+document.getElementById("Alt_CallBack").value = "changelistflangeselements|"+text;
+window.location='skp:ValueChanged@changelistflangeselements|readalt';
+}
+var text_realdel = "Действительно удалить: ";
+function delrow(rowid,namedu,d1,d2,d3,d4,h1,h2,h3,d,n,nametube,button)
+{row = document.getElementById(rowid);
+ nameid=document.getElementById(namedu);
+ du1id=document.getElementById(d1);
+ du2id=document.getElementById(d2);
+ du3id=document.getElementById(d3);
+ du4id=document.getElementById(d4);
+ h1id=document.getElementById(h1);
+ h2id=document.getElementById(h2);
+ h3id=document.getElementById(h3);
+ did = document.getElementById(d);
+ nid = document.getElementById(n);
+ descriptid=document.getElementById(nametube);
+ buttonid = document.getElementById(button);
+ if (confirm(text_realdel+descriptid.value))
+ {
+ nameid.parentNode.removeChild(nameid);
+ du1id.parentNode.removeChild(du1id);
+ du2id.parentNode.removeChild(du2id);
+ du3id.parentNode.removeChild(du3id);
+ du4id.parentNode.removeChild(du4id);
+ h1id.parentNode.removeChild(h1id);
+ h2id.parentNode.removeChild(h2id);
+ h3id.parentNode.removeChild(h3id);
+ did.parentNode.removeChild(did);
+ nid.parentNode.removeChild(nid);
+ descriptid.parentNode.removeChild(descriptid);
+ buttonid.parentNode.removeChild(buttonid);
+ row.parentNode.removeChild(row);
+ 
+ document.getElementById("Alt_CallBack").value = 'skp:ValueChanged@delete|'+name;
+ window.location='skp:ValueChanged@delete|'+name;
+ }
+}
+
+function listdocuments_load_succesfull()            //сообщить SU что загрузка произведена
+{
+	message = 'skp:ValueChanged@listdu_load_succesfull|0';
+	window.location=message;
+}
+</script>
+<!--****************************************************************************-->
+	</head>
+<link href="animate.css" rel="stylesheet" type="text/css">	
+<style type="text/css">
+	A IMG {border: none;}
+</style>
+<body onload="listdocuments_load_succesfull()">
+	<div align="right">
+	<a href="http://coolpipe.ru/" target="_blank">
+		<img src="../button_icons/logo.png" align="absmiddle" width="150" height="30" >
+	</a>
+	</div>
+	<div class="animated  flipInY ">
+	<div align="center">
+	<font size="2pt"><div id="text_editlistflanges">Редактирование списка фланцев</div></font>
+	</div>
+	<table id="du_options" align="center" border="1" width="825">
+	<tbody id="body_du_list">
+	<tr>
+	<td align="center"><div id="text_DiametrUslov">Диаметр<br>условный [мм]</div></td>
+	<td align="center">D1 [мм]</td>
+	<td align="center">D2 [мм]</td>
+	<td align="center">D3 [мм]</td>
+	<td align="center">D4 [мм]</td>
+	<td align="center">h1 [мм]</td>
+	<td align="center">h2 [мм]</td>
+	<td align="center">h3 [мм]</td>
+	<td align="center">d [мм]</td>
+	<td align="center">n [шт]</td>
+	<td align="center" colspan="2"><div id="text_NameForSpec">Наименование для<br>спецификации</div></td>
+	</tr>
+	</tbody>
+	</table>
+	</div>
+	<div align="center">
+		<input type="button" id="newdoc" value="Новый"     onclick="addDU()">
+		<input type="button" id="cancel" value="отмена"    onclick="cancel()">
+		<input type="button" id="save"   value="сохранить" onclick="save()">
+	</div>
+	<br>
+	<div align="center">
+		<font size="1pt"><div id="text_copyright">CoolPipe for SketchUP Interface©</div></font>
+	</div>
+	<div style="display:none">
+	<input id="Alt_CallBack" value="">
+	</div>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<script type="text/javascript" src="refreshdialog.js"></script>
+	</head>
+	<link href="animate.css" rel="stylesheet" type="text/css">
+	<style type="text/css">
+	A IMG {border: none;}
+	</style>
+	<body onload="load_succesfull()">
+		<div id="coolpipe_logo" align="right">
+		<a href="http://coolpipe.ru/" target="_blank">
+		<img src="../button_icons/logo.png" align="absmiddle" width="150" height="30" >
+		</a>
+		</div><br>
+		<div class="animated  flipInY ">
+		<table width="450">
+			<tr>
+				<td width="35%"><div id="text_database">База данных:</div></td>
+				<td width="65%">
+				<select id="Base_Type" onclick="fsetactivebase()">
+				</select>
+				<input type="button" name="change_list_bases" value="+/-" onclick="SketchUpCommand('Изменить_список_баз_данных')">
+				</td>
+			</tr>
+			<tr>
+				<td><div id="text_document">Документ:</div></td>
+				<td>
+				<select id="Document_Name" onclick="fsetactivedocument()">
+				</select>
+				<input type="button" name="change_list_documents" value="+/-" onclick="SketchUpCommand('Изменить_список_документов')">
+				</td>
+			</tr>
+			<tr>
+				<td><font size="1"><div id="text_nameofdocument">Наименование документа:</div></font></td>
+				<td><font size="1"><div id="Name_DOC"></div></font></td>
+			</tr>
+			<tr>
+				<td><div id="text_uslovndiametr">Условный диаметр:</div></td>
+				<td>
+				<select id="Du_Select" onclick="fsetactivedu()"></select>
+
+				<input type="button" name="change_list_du" value="+/-" onclick="SketchUpCommand('Изменить_список_диаметров')">
+				</td>
+			</tr>
+			<tr>
+				<td><div id="text_nametube">Наименование:</div></td>
+				<td>
+				<font size="2"><div id="Name_Pipe"></div></font>
+				</td>
+			</tr>
+			<tr>
+			<td colspan="2" height="10%">
+			<div align="left">
+			<hr>
+			<input type="checkbox" id="idputlayers" name="putlayercheck" onclick="fcheckassign(this)">
+				<label for="idputlayers" id="text_needLayers">Использовать слои</label>
+				<div style="display:none">
+				<input id="checked_layers" value="false">
+				</div>
+			<br>
+			<div id="blocksellayers" style="display:none">
+			<input type="checkbox" id="idputmaterial" name="putmaterialcheck" onclick="fcheckassign(this)">
+				<label for="idputmaterial" id="text_needmaterials">Накладывать материалы (цвет в настройках слоев)</label>
+				<div style="display:none">
+				<input id="checked_materials" value="false">
+				</div>
+			<br>
+			<select id='idlayerselect'></select>
+			<input type="button" name="changelayersbutton" value="+/-" onclick="SketchUpCommand('Изменить_список_слоев')">
+			<br>
+			</div>
+			<!--
+			<input type="checkbox" id="idputteploizol" name="putlayercheck" onclick="fcheckassign(this)">
+				<label for="idputteploizol">Наложить теплоизоляцию</label>
+			<br>
+			<div id="blockselteploizol" style="display:none">
+			<select id='idteploizolselect'></select>
+			<input type='button' name='changeteploizolbutton' value='+/-' onclick='SketchUpCommand(3)'>
+			</div>
+			-->
+			<!-- #################################################### -->
+			<!-- ################## v. 1.4(2017) #################### -->
+			<hr>
+			<input type="checkbox" id="idHydravlik" name="HydravlikCheck" onclick="fcheckHydroassign(this)">
+				<label for="idHydravlik" id="text_Hydravlik">Поверочный гидравлический расчет</label>
+				<div style="display:none">
+				<input id="checked_Hydravlik" value="false">
+				</div>
+			<br>
+			<div id="blockHydravlik" style="display:none">
+			<table width="400">
+				<tr>
+					<td width="140px"><div id="text_nagruzka">Нагрузка:</div></td>
+					<td>
+						<table>
+							<tr>
+								<td><input type="number" step="5" name="set_heating_power" id="ID_heatingpower" value="25" onchange="recalc_hydravlick()"></td>
+								<td><div display:inline id="text_kWt" align="left">кВт</div></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>t1: </td>
+					<td><input width="50px" type="number" step="5" name="set_deltaT" id="ID_t1" value="95" onchange="recalc_hydravlick()">°С</td>
+				</tr>
+				<tr>
+					<td>t2: </td>
+					<td><input width="50px" type="number" step="5" name="set_deltaT" id="ID_t2" value="70" onchange="recalc_hydravlick()">°С</td>
+				</tr>
+				<tr>
+					<td><div id="text_heat_transfer_agent">Теплоноситель:</div></td>
+					<td>
+					<select id="Сoolant_Select" onchange="recalc_hydravlick()"></select>
+					</td>
+				</tr>
+				<tr>
+					<td><div id="text_roughness">Коэф.шероховатости:</div></td>
+					<td><input width="50px" type="number" step="5" name="set_ksh" id="ID_ksh" value="0.2" onchange="recalc_hydravlick()"></td>
+				</tr>
+				<tr>
+					<td><div id="text_Average_density">Средняя плотность:</div></td>
+					<td><div id="TD_plotnost">кг/м³</div></td>	<!-- Динамическое изменение см. refreshdialog.js-->
+				</tr>
+				<tr>
+					<td><div id="text_Kinematic_viscosity">Кинематическая вязкость:</div></td>
+					<td><div id="TD_vyazkost">м²/с</div></td>	<!-- Динамическое изменение см. refreshdialog.js-->
+				</tr>
+				<tr>
+					<td><div id="text_Rate">Расход:</div></td>
+					<td><div id="TD_rashod">кг/ч | кг/с</div></td> <!-- Динамическое изменение см. refreshdialog.js-->
+				</tr>
+				<tr>
+					<td><div id="text_Inner_diameter">Внутренний диаметр:</div></td>
+					<td><div id="TD_dvn">мм</div></td>	<!-- Динамическое изменение см. refreshdialog.js-->
+				</tr>
+				<tr>
+					<td><div id="text_velocity_HTA">Скорость:</div></td>
+					<td><div id="TD_Speed">м/с</div></td>	<!-- Динамическое изменение см. refreshdialog.js-->
+				</tr>
+				<tr>
+					<td><div id="text_Reynolds_number">Число Рейнольдса:</div></td>
+					<td><div id="TD_Re"></div></td>	<!-- Динамическое изменение см. refreshdialog.js-->
+				</tr>
+				<tr>
+					<td><div id="text_Coefficient_hydraulic_friction">Коэффициент гидравлического трения:</div></td>
+					<td><div id="TD_GidrTren"></div></td> <!-- Динамическое изменение см. refreshdialog.js-->
+				</tr>
+				<tr>
+					<td><div id="text_Specific_losses">Удельные потери:</div></td>
+					<td><div id="TD_UdelPoteri">Па/м</div></td>	<!-- Динамическое изменение см. refreshdialog.js-->
+				</tr>
+			</table>
+			<hr>
+			</div>
+			<!-- #################################################### -->
+			<input type="checkbox" id="idStraightTubing" name="StraightTubing" onclick="fcheckStraightTubing(this)">
+				<label for="idStraightTubing" id="text_StraightTubing">Установить прямой участок для трубопровода</label>
+				<div style="display:none"><input id="checked_StraightTubing" value="false"></div>
+			<br>
+			<div id="blockStraightTubing" style="display:none">
+			<table width="400">
+				<tr>
+					<td width="35%"><div id="text_Length_of_the_plot">Длина участка:</div><td>
+					<td width="65%"><input type="number" step="0.01" name="set_Straight" id="ID_LengthStrTubing" value="1000" onchange="finputStraightTubing(this)">мм</td>
+				</tr>
+				<tr>
+					<td><div id="text_Count_in_pieces">Считать в штуках:</div><td>
+					<td>
+					<input type="checkbox" id="idConsideredInPiecesCheck" name="ConsideredInPiecesCheck" onclick="fConsideredInPieces(this)">
+					<div style="display:none"><input id="checked_ConsideredInPieces" value="false"></div>
+					</td>
+				</tr>
+			</table>
+			</div>
+			<!-- #################################################### -->
+			<!-- #################################################### -->
+			<hr>
+			<br>
+				<div align="center">
+					<input type="button" name="drawbutton" id="text_draw" value="чертить" onclick="SketchUpCommand('чертить')">
+					<input type="button" name="cancelbutton" id="text_cancel" value="отмена" onclick="SketchUpCommand('отмена')">
+				</div>
+			</div>
+			</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div align="center">
+					<font size="1pt"><div id="text_copyright">CoolPipe for SketchUP Interface©</div></font>
+					</div>
+				</td>
+			</tr>
+			<tr style="display:none">
+			 <td>
+			 <input id="Alt_CallBack" value="">
+			 </td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

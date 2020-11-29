@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<title>CoolPipe Dialog - change Z</title>
+		<script type="text/javascript">
+		function SketchUpCommand(command)
+		{
+		newz=document.getElementById("z=").value;
+		message='skp:ValueChanged@'+command+"|"+newz;
+		window.location=message;
+		}
+		
+		function setz(z)
+		{
+		document.getElementById("z=").value=z;
+		}
+		function load_succesfull()            //сообщить SU что загрузка произведена
+		{
+		message = 'skp:ValueChanged@load_succesfull|0';
+		window.location=message;
+		}
+		</script>
+</head>
+<body onload="load_succesfull()">
+	<div align="center">
+	Z = <input id="z=" value=""> [мм]
+	<br>
+	<br>
+	<input type="button" name="ok" id="text_ok" value="Принять" onclick="SketchUpCommand(1)">
+	<input type="button" name="cancel" id="text_cancel" value="отмена" onclick="SketchUpCommand(0)">
+	</div>
+</body>
+</html>
