@@ -2161,6 +2161,24 @@ module Sketchup::CoolPipe
 		######
 		def cp_get_length_tube(tube,attributes) #Метод определяет длину трубопровода
 			length = 0
+			scale_z = ((Geom::Vector3d.new 0,0,1).transform! tube.transformation).length
+			
+			case tube.class.to_s
+				when "Sketchup::Group"
+					entities = tube.entities
+				when "Sketchup::ComponentInstance"
+					entities = tube.definition.entities
+				else
+					return 0
+			end
+		
+			entities.each { |entity|
+				length = [length, (entity.bounds.depth * scale_z).to_m].max
+			}
+			length = Sketchup::CoolPipe::roundf(length,5)
+			#puts "len = " + len.to_s
+=begin
+			length = 0
 			connectors = Sketchup::CoolPipe::cp_get_connectors_arr(tube)
 			if (connectors.length==2) && (attributes[:Тип]=="Труба")
 				tr1 = tube.transformation                        #трансформация для получения текщих координат
@@ -2172,6 +2190,7 @@ module Sketchup::CoolPipe
 				length = Sketchup::CoolPipe::roundf(vec.length.to_m,5) if vec!=nil
 				#puts "Участок трубы length = #{length} (#{attributes[:Имя]})"
 			end
+=end
 			if length==0 #Строится предположение что труба начерчена в версии 1.2.1
 				length=get_length_tube_1_2_1(tube,attributes)
 			end
